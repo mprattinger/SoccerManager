@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using SoccerManager.Data.DTO;
@@ -7,16 +8,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SoccerManager.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<User, UserRole, string>
+    //public class ApplicationDbContext : IdentityDbContext<User, UserRole, string>
+    public class ApplicationDbContext : IdentityDbContext<User>
     {
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {
-
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -47,15 +49,15 @@ namespace SoccerManager.Data
         private void auditEntities()
         {
             var uname = String.Empty;
-            var user = ClaimsPrincipal.Current;
-            if (user != null)
-            {
-                var identity = user.Identity;
-                if (identity != null)
-                {
-                    uname = identity.Name;
-                }
-            }
+            //var user = _principal?.FindFirst(ClaimTypes.UserData);
+            //if (user != null)
+            //{
+            //    var identity = user.Identity;
+            //    if (identity != null)
+            //    {
+            //        uname = identity.Name;
+            //    }
+            //}
             if (String.IsNullOrEmpty(uname)) uname = "Unknow";
 
             foreach (EntityEntry<IAuditable> entry in ChangeTracker.Entries<IAuditable>())

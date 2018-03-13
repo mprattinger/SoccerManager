@@ -40,8 +40,8 @@ namespace SoccerManager
             //{
             //    _logger.LogInformation("Creating admin role...");
             //    createAdminRole();
-            //    _logger.LogInformation("Creating user role...");
-            //    createUserRole();
+            //    //_logger.LogInformation("Creating user role...");
+            //    //createUserRole();
             //}
 
             User adminUser = null;
@@ -55,7 +55,7 @@ namespace SoccerManager
                 _logger.LogInformation("Creating admin user...");
                 adminUser = createAdminUser();
                 //_logger.LogInformation("Add admin user to admin role");
-                //addAdmin2Role(user);
+                //addAdmin2Role(adminUser);
             }
 
             _logger.LogInformation("Seeding database...");
@@ -69,21 +69,21 @@ namespace SoccerManager
 
 
         #region User and Roles
-        //private static void createAdminRole()
-        //{
-        //    var role = new UserRole { Name = "admin", Description = "Administrator" };
-        //    var result = _roleManager.CreateAsync(role).Result;
-        //    if (result.Succeeded)
-        //    {
-        //        _logger.LogInformation("Admin role created!");
-        //    }
-        //    else
-        //    {
-        //        var err = string.Join(" ", result.Errors.Select(e => e.Code + ": " + e.Description));
-        //        _logger.LogInformation("When creating the admin role, the following errors occured: " + err);
-        //        throw new ApplicationException("Error creating a role");
-        //    }
-        //}
+        private static void createAdminRole()
+        {
+            var role = new UserRole { Name = "admin", Description = "Administrator" };
+            var result = _roleManager.CreateAsync(role).Result;
+            if (result.Succeeded)
+            {
+                _logger.LogInformation("Admin role created!");
+            }
+            else
+            {
+                var err = string.Join(" ", result.Errors.Select(e => e.Code + ": " + e.Description));
+                _logger.LogInformation("When creating the admin role, the following errors occured: " + err);
+                throw new ApplicationException("Error creating a role");
+            }
+        }
 
         //private static void createUserRole()
         //{
@@ -103,7 +103,7 @@ namespace SoccerManager
 
         private static User createAdminUser()
         {
-            var user = new User { Email = "admin@admin.com", IsProductivePassword = true };
+            var user = new User { UserName = "admin@admin.com", Email = "admin@admin.com", IsProductivePassword = true };
             var result = _userManager.CreateAsync(user, "At4711").Result;
             if (result.Succeeded)
             {
@@ -118,20 +118,20 @@ namespace SoccerManager
             return user;
         }
 
-        //private static void addAdmin2Role(User user)
-        //{
-        //    var result = _userManager.AddToRoleAsync(user, "admin").Result;
-        //    if (result.Succeeded)
-        //    {
-        //        _logger.LogInformation("Admin user added to admin role!");
-        //    }
-        //    else
-        //    {
-        //        var err = string.Join(" ", result.Errors.Select(e => e.Code + ": " + e.Description));
-        //        _logger.LogInformation("When adding the admin user to the admin role, the following errors occured: " + err);
-        //        throw new ApplicationException("Error adding a user to role");
-        //    }
-        //}
+        private static void addAdmin2Role(User user)
+        {
+            var result = _userManager.AddToRoleAsync(user, "admin").Result;
+            if (result.Succeeded)
+            {
+                _logger.LogInformation("Admin user added to admin role!");
+            }
+            else
+            {
+                var err = string.Join(" ", result.Errors.Select(e => e.Code + ": " + e.Description));
+                _logger.LogInformation("When adding the admin user to the admin role, the following errors occured: " + err);
+                throw new ApplicationException("Error adding a user to role");
+            }
+        }
         #endregion
 
         #region Seeding
@@ -143,10 +143,10 @@ namespace SoccerManager
             var ptypesPlayerUser = new PersonType[] { PersonType.PLAYER, PersonType.USER };
             var persons = new Person[]
             {
-                new Person { FirstName = "Admin", LastName = "User", PersonTypes = ptypesAdmin, UserId = adminUser.Id },
-                new Person{ FirstName = "Michael", LastName = "Prattinger", PersonTypes = ptypesPlayerUser},
-                new Person{ FirstName = "Christian", LastName = "Sulyok", PersonTypes = ptypesPlayer},
-                new Person{ FirstName = "Daniel", LastName = "Art", PersonTypes = ptypesPlayerUser}
+                new Person { FirstName = "Admin", LastName = "User", PersonTypes = "100", UserId = adminUser.Id },
+                new Person{ FirstName = "Michael", LastName = "Prattinger", PersonTypes = "011"},
+                new Person{ FirstName = "Christian", LastName = "Sulyok", PersonTypes = "001"},
+                new Person{ FirstName = "Daniel", LastName = "Art", PersonTypes = "011"}
             };
             _context.Persons.AddRange(persons);
             return persons;

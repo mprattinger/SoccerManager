@@ -7,5 +7,8 @@ namespace SoccerManager.Data.DTO.Identity
     {
         [Required]
         public bool IsProductivePassword { get; set; }
+
+        [Required]
+        public bool LoginAllowed { get; set; }
     }
 }

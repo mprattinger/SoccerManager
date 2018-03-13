@@ -16,7 +16,7 @@ namespace SoccerManager.Data.DTO
         [Required]
         public string LastName { get; set; }
         [Required]
-        public PersonType[] PersonTypes { get; set; }
+        public string PersonTypes { get; set; }
 
         public string UserId { get; set; }
         public User User { get; set; }
