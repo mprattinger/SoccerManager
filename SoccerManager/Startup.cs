@@ -15,6 +15,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using SoccerManager.Auth;
+using SoccerManager.Auth.Requirements;
 using SoccerManager.Data;
 using SoccerManager.Data.DTO.Identity;
 using SoccerManager.Extensions;
@@ -83,7 +84,8 @@ namespace SoccerManager
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("ApiUser", policy => policy.RequireClaim(Helpers.Constants.Strings.JwtClaimIdentifiers.Rol, Helpers.Constants.Strings.JwtClaims.ApiAccess));
+                //options.AddPolicy("ApiUser", policy => policy.RequireClaim(   , Helpers.Constants.Strings.JwtClaims.ApiAccess));
+                options.AddPolicy("UserManagement", policy => policy.Requirements.Add(new UserManagementRequirement()));
             });
 
             var builder = services.AddIdentityCore<User>(o =>

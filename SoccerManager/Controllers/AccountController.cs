@@ -21,7 +21,7 @@ using SoccerManager.ViewModels;
 namespace SoccerManager.Controllers
 {
     //[Authorize(Policy = "RequireElevatedRights")]
-    [Authorize(Policy = "ApiUser")]
+    [Authorize(Policy = "UserManagement")]
     [Produces("application/json")]
     [Route("api/[controller]/[action]")]
     public class AccountController : Controller
