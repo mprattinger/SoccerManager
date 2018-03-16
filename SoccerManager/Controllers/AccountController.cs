@@ -74,7 +74,7 @@ namespace SoccerManager.Controllers
 
         [AllowAnonymous]
         //[HttpPost("/registeruser/{email}")]
-        [HttpPost("")]
+        [HttpPost()]
         public async Task<IActionResult> RegisterUser([FromBody] RegisterUserViewModel regUser)
         {
             try
