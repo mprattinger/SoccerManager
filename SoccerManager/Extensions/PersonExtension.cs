@@ -20,5 +20,10 @@ namespace SoccerManager.Extensions
 
             return ret;
         }
+
+        public static string FullName(this Person person)
+        {
+            return $"{person.FirstName} {person.LastName}";
+        }
     }
 }

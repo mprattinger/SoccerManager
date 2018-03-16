@@ -5,6 +5,7 @@ using System.Text;
 using AutoMapper;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
@@ -15,6 +16,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using SoccerManager.Auth;
+using SoccerManager.Auth.Handlers;
 using SoccerManager.Auth.Requirements;
 using SoccerManager.Data;
 using SoccerManager.Data.DTO.Identity;
@@ -108,6 +110,8 @@ namespace SoccerManager
                 c.SwaggerDoc("v1", new Info { Title = "SoccerManager API", Version = "v1" });
                 c.AddSecurityDefinition("Bearer", new ApiKeyScheme { In = "header", Description = "Please insert JWT with Bearer into field", Name = "Authorization", Type = "apiKey" });
             });
+
+            services.AddTransient<IAuthorizationHandler, UserManagementHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SoccerManager.Extensions
@@ -32,6 +35,12 @@ namespace SoccerManager.Extensions
             response.Headers.Add("Application-Error", message);
             // CORS
             response.Headers.Add("access-control-expose-headers", "Application-Error");
+        }
+
+        public static string StringifyIdentityErrors(this List<IdentityError> identityErrors)
+        {
+            var errors = identityErrors.Select(e => String.Join(", ", $"{e.Code}: {e.Description}")).ToList();
+            return String.Join(", ", errors);
         }
     }
 }

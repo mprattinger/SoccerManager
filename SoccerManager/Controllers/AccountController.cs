@@ -14,9 +14,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using SoccerManager.Data;
+using SoccerManager.Data.DTO;
 using SoccerManager.Data.DTO.Identity;
 using SoccerManager.Extensions;
 using SoccerManager.ViewModels;
+using SoccerManager.ViewModels.Auth;
 
 namespace SoccerManager.Controllers
 {
@@ -48,8 +50,20 @@ namespace SoccerManager.Controllers
         {
             try
             {
-                var users = await _context.Users.ToListAsync();
-                return Ok(users);
+                //var users = from u in _context.Users
+                //        join p in _context.Persons on u.UserName equals p.UserId
+                //        into joined
+                //        select new UserListViewModel { UserName = u.UserName, EMail = u.Email, IsLoginAllowed = u.LoginAllowed, IsProductivePassword = u.IsProductivePassword, AssignedPersons = joined.ToList() };
+                var d = new List<UserListViewModel>();
+                await _context.Users.ForEachAsync(async u =>
+                {
+                    var vm = new UserListViewModel { UserName = u.UserName, EMail = u.Email, IsLoginAllowed = u.LoginAllowed, IsProductivePassword = u.IsProductivePassword };
+                    vm.AssignedPersons = new List<Person>();
+                    await _context.Persons.Where(p => p.UserId == u.UserName).ForEachAsync(p => vm.AssignedPersons.Add(p));
+                    d.Add(vm);
+                });
+
+                return Ok(d);
             }
             catch (Exception ex)
             {
@@ -58,144 +72,98 @@ namespace SoccerManager.Controllers
             }
         }
 
-        //[AllowAnonymous]
-        ////[HttpPost("/registeruser/{email}")]
-        //[HttpPost("{email}")]
-        //public async Task<IActionResult> RegisterUser(string email)
-        //{
-        //    try
-        //    {
-        //        _logger.LogInformation($"Checking email ({email})....");
-        //        if (String.IsNullOrEmpty(email)) return BadRequest("Email darf nicht leer sein!");
-        //        if(!email.IsValidEmail()) return BadRequest("Email muß eine Email-Addresse sein!");
+        [AllowAnonymous]
+        //[HttpPost("/registeruser/{email}")]
+        [HttpPost("")]
+        public async Task<IActionResult> RegisterUser([FromBody] RegisterUserViewModel regUser)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    _logger.LogInformation($"Checking email ({regUser.UserName})....");
+                    if (String.IsNullOrEmpty(regUser.UserName)) return BadRequest("Email darf nicht leer sein!");
+                    if (!regUser.UserName.IsValidEmail()) return BadRequest("Email muß eine Email-Addresse sein!");
 
-        //        _logger.LogInformation($"Creating user...");
-        //        var user = new User { Email = email, IsProductivePassword = false };
-        //        var res = await _userManager.CreateAsync(user, "InitialPw");
-        //        if (res.Succeeded)
-        //        {
-        //            _logger.LogInformation($"Adding user to default role...");
-        //            var res2 = await _userManager.AddToRoleAsync(user, "user");
-        //            if (res2.Succeeded)
-        //            {
-        //                _logger.LogInformation("Everything ok!");
-        //                return Ok(new { registeredUser = user, role = "user" });
-        //            }
-        //            else
-        //            {
-        //                _logger.LogError("Error adding user to role!");
-        //                return StatusCode(500, "Internal server error");
-        //            }
-        //        }
-        //        else
-        //        {
-        //            _logger.LogError("Error creating User!");
-        //            return StatusCode(500, "Internal server error");
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError("Error creating User!", ex);
-        //        return StatusCode(500, "Internal server error");
-        //    }
-        //}
+                    _logger.LogInformation($"Creating user...");
+                    var user = new User { UserName = regUser.UserName, Email = regUser.UserName, IsProductivePassword = false, LoginAllowed = false };
+                    var res = await _userManager.CreateAsync(user, "InitialPw");
+                    if (res.Succeeded)
+                    {
+                        _logger.LogInformation("Everything ok!");
+                        return Ok(new { registeredUser = user });
+                    }
+                    else
+                    {
+                        _logger.LogError("Error creating User!");
+                        return StatusCode(500, "Internal server error");
+                    }
+                }
+                else
+                {
+                    _logger.LogInformation($"Modelstate is not valid! ({ModelState.StringifyModelStateErrors()})");
+                    return BadRequest(ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error creating User!", ex);
+                return StatusCode(500, "Internal server error");
+            }
+        }
 
-        //[HttpPost("{id}")]
-        //public async Task<IActionResult> DeleteUser(string id)
-        //{
-        //    try
-        //    {
-        //        _logger.LogDebug($"Loading user by userid {id}...");
-        //        var user = await _userManager.FindByIdAsync(id);
-        //        if (user == null)
-        //        {
-        //            _logger.LogError($"Can't find user by id {id}");
-        //            return NotFound();
-        //        }
-        //        _logger.LogDebug("Loading role of the user...");
-        //        var roles = await _userManager.GetRolesAsync(user);
-        //        _logger.LogInformation("Removing roles...");
-        //        var res = await _userManager.RemoveFromRolesAsync(user, roles);
-        //        if (res.Succeeded)
-        //        {
-        //            _logger.LogInformation("Removing user...");
-        //            var res2 = await _userManager.DeleteAsync(user);
-        //            if (res2.Succeeded)
-        //            {
-        //                return Ok();
-        //            }
-        //            else
-        //            {
-        //                _logger.LogError("Error deleting user!");
-        //                return StatusCode(500, "Internal server error");
-        //            }
-        //        }
-        //        else
-        //        {
-        //            _logger.LogError("Error deleting user roles!");
-        //            return StatusCode(500, "Internal server error");
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError("Error deleting User!", ex);
-        //        return StatusCode(500, "Internal server error");
-        //    }
-        //}
+        [HttpPost()]
+        public async Task<IActionResult> DeleteUser([FromBody] RegisterUserViewModel regUser)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    _logger.LogDebug($"Loading user by userid {regUser.UserName}...");
+                    var user = await _userManager.FindByNameAsync(regUser.UserName);
+                    if (user == null)
+                    {
+                        _logger.LogError($"Can't find user by id {regUser.UserName}");
+                        return NotFound();
+                    }
 
-        //[AllowAnonymous]
-        //[HttpPost()]
-        //public async Task<IActionResult> GetToken(LoginViewModel viewModel)
-        //{
-        //    try
-        //    {
-        //        if (ModelState.IsValid)
-        //        {
-        //            var user = await _userManager.FindByEmailAsync(viewModel.Email);
-        //            if (user != null)
-        //            {
-        //                var result = await _signInManager.CheckPasswordSignInAsync(user, viewModel.Password, false);
-        //                if (result.Succeeded)
-        //                {
-        //                    var claims = new[]
-        //                    {
-        //                        new Claim(JwtRegisteredClaimNames.Sub, user.Email),
-        //                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-        //                    };
-        //                    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Tokens:Key"]));
-        //                    var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+                    _logger.LogDebug("Loading related persons...");
+                    var persons = await _context.Persons.Where(p => p.UserId == regUser.UserName).ToListAsync();
+                    foreach (var p in persons)
+                    {
+                        _logger.LogDebug($"Changing person {p.FullName()}...");
+                        p.UserId = String.Empty;
+                    }
+                    if (persons.Count() > 0)
+                    {
+                        _logger.LogInformation($"Updating {persons.Count()} persons...");
+                        _context.UpdateRange(persons);
+                        await _context.SaveChangesAsync();
+                    }
 
-        //                    var token = new JwtSecurityToken(_config["Tokens:Issuer"],
-        //                        _config["Tokens:Issuer"],
-        //                        claims,
-        //                        expires: DateTime.Now.AddDays(30),
-        //                        signingCredentials: creds);
-
-        //                    return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token) });
-        //                }
-        //                else
-        //                {
-        //                    _logger.LogInformation($"Cannot login User");
-        //                    return Unauthorized();
-        //                }
-        //            }
-        //            else
-        //            {
-        //                _logger.LogInformation($"Cannot find user with email {viewModel.Email}");
-        //                return NotFound();
-        //            }
-        //        }
-        //        else
-        //        {
-        //            _logger.LogError($"Modelstate is not valid! ({ModelState.StringifyModelStateErrors()})");
-        //            return BadRequest(ModelState);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError("Error get token!", ex);
-        //        return StatusCode(500, "Internal server error");
-        //    }
-        //}
+                    _logger.LogInformation("Removing user...");
+                    var res = await _userManager.DeleteAsync(user);
+                    if (res.Succeeded)
+                    {
+                        return Ok();
+                    }
+                    else
+                    {
+                        _logger.LogError($"Error deleting user! ({res.Errors.ToList().StringifyIdentityErrors()})");
+                        return StatusCode(500, "Internal server error");
+                    }
+                }
+                else
+                {
+                    _logger.LogInformation($"Modelstate is not valid! ({ModelState.StringifyModelStateErrors()})");
+                    return BadRequest(ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error deleting User!", ex);
+                return StatusCode(500, "Internal server error");
+            }
+        }
     }
 }

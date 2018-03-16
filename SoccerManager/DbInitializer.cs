@@ -69,21 +69,21 @@ namespace SoccerManager
 
 
         #region User and Roles
-        private static void createAdminRole()
-        {
-            var role = new UserRole { Name = "admin", Description = "Administrator" };
-            var result = _roleManager.CreateAsync(role).Result;
-            if (result.Succeeded)
-            {
-                _logger.LogInformation("Admin role created!");
-            }
-            else
-            {
-                var err = string.Join(" ", result.Errors.Select(e => e.Code + ": " + e.Description));
-                _logger.LogInformation("When creating the admin role, the following errors occured: " + err);
-                throw new ApplicationException("Error creating a role");
-            }
-        }
+        //private static void createAdminRole()
+        //{
+        //    var role = new UserRole { Name = "admin", Description = "Administrator" };
+        //    var result = _roleManager.CreateAsync(role).Result;
+        //    if (result.Succeeded)
+        //    {
+        //        _logger.LogInformation("Admin role created!");
+        //    }
+        //    else
+        //    {
+        //        var err = string.Join(" ", result.Errors.Select(e => e.Code + ": " + e.Description));
+        //        _logger.LogInformation("When creating the admin role, the following errors occured: " + err);
+        //        throw new ApplicationException("Error creating a role");
+        //    }
+        //}
 
         //private static void createUserRole()
         //{
@@ -103,7 +103,7 @@ namespace SoccerManager
 
         private static User createAdminUser()
         {
-            var user = new User { UserName = "admin@admin.com", Email = "admin@admin.com", IsProductivePassword = true };
+            var user = new User { UserName = "admin@admin.com", Email = "admin@admin.com", IsProductivePassword = true, LoginAllowed = true };
             var result = _userManager.CreateAsync(user, "At4711").Result;
             if (result.Succeeded)
             {
@@ -143,7 +143,7 @@ namespace SoccerManager
             var ptypesPlayerUser = new PersonType[] { PersonType.PLAYER, PersonType.USER };
             var persons = new Person[]
             {
-                new Person { FirstName = "Admin", LastName = "User", PersonTypes = "100", UserId = adminUser.Id },
+                new Person { FirstName = "Admin", LastName = "User", PersonTypes = "100", UserId = adminUser.UserName },
                 new Person{ FirstName = "Michael", LastName = "Prattinger", PersonTypes = "011"},
                 new Person{ FirstName = "Christian", LastName = "Sulyok", PersonTypes = "001"},
                 new Person{ FirstName = "Daniel", LastName = "Art", PersonTypes = "011"}

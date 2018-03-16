@@ -1,9 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 using SoccerManager.Auth.Requirements;
 using SoccerManager.Data;
+using SoccerManager.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace SoccerManager.Auth.Handlers
@@ -17,17 +20,25 @@ namespace SoccerManager.Auth.Handlers
             _context = context;
         }
 
-        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, UserManagementRequirement requirement)
+        protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, UserManagementRequirement requirement)
         {
-            if (!context.User.HasClaim(c => c.Type == Helpers.Constants.Strings.JwtClaimIdentifiers.Rol)) return Task.CompletedTask;
+            //Nur Admins dürfen die User sehen
+            if (!context.User.HasClaim(c => c.Type == ClaimTypes.NameIdentifier)) return;
+            var uname = context.User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier).Value;
+            //var user = _context.Users.Where(u => u.UserName == uname).FirstOrDefaultAsync();
+            //if (user == null) return;
+            var person = await _context.Persons.Where(p => p.UserId == uname).FirstOrDefaultAsync();
+            if (person == null) return;
 
-            var role = context.User.FindFirst(c => c.Type == Helpers.Constants.Strings.JwtClaimIdentifiers.Rol).Value;
-            if(role == Helpers.Constants.Strings.JwtClaims.ApiAccess)
-            {
-                context.Succeed(requirement);
-            }
+            if (person.GetPersonTypes().Any(t => t == Models.PersonType.ADMINISTRATOR)) context.Succeed(requirement);
 
-            return Task.CompletedTask;
+            //if (!context.User.HasClaim(c => c.Type == Helpers.Constants.Strings.JwtClaimIdentifiers.Rol)) return;
+
+            //var role = context.User.FindFirst(c => c.Type == Helpers.Constants.Strings.JwtClaimIdentifiers.Rol).Value;
+            //if(role == Helpers.Constants.Strings.JwtClaims.ApiAccess)
+            //{
+            //    context.Succeed(requirement);
+            //}
         }
     }
 }
