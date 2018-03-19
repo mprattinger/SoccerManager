@@ -31,14 +31,6 @@ namespace SoccerManager.Auth.Handlers
             if (person == null) return;
 
             if (person.GetPersonTypes().Any(t => t == Models.PersonType.ADMINISTRATOR)) context.Succeed(requirement);
-
-            //if (!context.User.HasClaim(c => c.Type == Helpers.Constants.Strings.JwtClaimIdentifiers.Rol)) return;
-
-            //var role = context.User.FindFirst(c => c.Type == Helpers.Constants.Strings.JwtClaimIdentifiers.Rol).Value;
-            //if(role == Helpers.Constants.Strings.JwtClaims.ApiAccess)
-            //{
-            //    context.Succeed(requirement);
-            //}
         }
     }
 }
