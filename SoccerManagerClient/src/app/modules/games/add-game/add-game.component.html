@@ -1,0 +1,78 @@
+<div class="container">
+  <h1>Neues Spiel anlegen</h1>
+  <form [formGroup]="addGameForm" (ngSubmit)="onFormSubmit(addGameForm.value)">
+
+    <mat-form-field class="add-game-form-full-width">
+      <input formControlName="gameDay" matInput placeholder="Spieltag" [matDatepicker]="picker" required>
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+      <mat-error>
+        <span *ngIf="!addGameForm.get('gameDay').valid && addGameForm.get('gameDay').touched">
+          Bitte geben Sie einen Spieltag ein!
+        </span>
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="add-game-form-full-width">
+      <input formControlName="starting" matInput placeholder="Beginndatum" required>
+      <mat-error>
+        <span *ngIf="!addGameForm.get('gameDay').valid && addGameForm.get('gameDay').touched">
+          Bitte geben Sie einen Spieltag ein!
+        </span>
+      </mat-error>
+    </mat-form-field>
+  </form>
+
+
+
+
+
+
+
+
+  <!-- <form (ngSubmit)="onSubmit()" #addGameForm="ngForm" class="mat-dialog-content add-game-form">
+    <div class="add-game-form-field">
+      <mat-form-field class="add-game-form-full-width">
+          <input matInput [matDatepicker]="picker" placeholder="Spieltag"
+          name="gameDay" #gameDay="ngModel" [(ngModel)]="model.gameDay" required>
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+          <mat-error *ngIf="gameDay.invalid && (gameDay.dirty || gameDay.touched) && gameDay.errors.required">
+            Bitte geben Sie einen Spieltag ein!
+          </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="add-game-form-field">
+      <mat-form-field class="add-game-form-full-width">
+        <input matInput type="datetime" name="starting" #starting="ngModel"
+        placeholder="Spielzeit" [(ngModel)]="model.starting" [formControl]="startingFormControl" required>
+        <mat-error *ngIf="starting.invalid && (starting.dirty || starting.touched) && starting.errors.required">
+          Die Beginzeit ist ein Mußfeld!
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+
+
+
+
+
+    <!-- <mat-form-field class="add-game-form-full-width">
+        <input matInput id="userName" required [(ngModel)]="model.userName"
+        name="userName" #userName="ngModel" placeholder="Username">
+        <mat-error *ngIf="userName.invalid && (userName.dirty || userName.touched) && userName.errors.required">The username is required</mat-error>
+      </mat-form-field>
+      <br>
+      <mat-form-field class="login-form-full-width">
+        <input matInput id="password" required [(ngModel)]="model.password"
+        name="password" #password="ngModel" placeholder="Password" type="password">
+        <mat-error *ngIf="password.invalid && (password.dirty || password.touched) && password.errors.required">The password is required</mat-error>
+      </mat-form-field>
+      <br>
+      <div class="login-form-full-width-btnwrapper">
+        <button type="submit" mat-raised-button color="primary"
+              [disabled]="!loginForm.form.valid">Login</button>
+      </div>
+  </form> -->
+</div>

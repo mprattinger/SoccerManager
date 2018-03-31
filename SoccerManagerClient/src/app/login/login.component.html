@@ -1,0 +1,21 @@
+<div class="container">
+  <h1>SoccerManager Login</h1>
+  <form (ngSubmit)="onSubmit()" #loginForm="ngForm" class="login-form">
+    <mat-form-field class="login-form-full-width">
+      <input matInput id="userName" required [(ngModel)]="model.userName"
+      name="userName" #userName="ngModel" placeholder="Username">
+      <mat-error *ngIf="userName.invalid && (userName.dirty || userName.touched) && userName.errors.required">The username is required</mat-error>
+    </mat-form-field>
+    <br>
+    <mat-form-field class="login-form-full-width">
+      <input matInput id="password" required [(ngModel)]="model.password"
+      name="password" #password="ngModel" placeholder="Password" type="password">
+      <mat-error *ngIf="password.invalid && (password.dirty || password.touched) && password.errors.required">The password is required</mat-error>
+    </mat-form-field>
+    <br>
+    <div class="login-form-full-width-btnwrapper">
+      <button type="submit" mat-raised-button color="primary"
+            [disabled]="!loginForm.form.valid">Login</button>
+    </div>
+  </form>
+</div>
