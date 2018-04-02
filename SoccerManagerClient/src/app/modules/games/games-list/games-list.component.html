@@ -1,4 +1,12 @@
 <div class="games-list-container mat-elevation-z8">
+    <div class="games-table-top">
+        <mat-form-field>
+          <mat-select [(ngModel)]="selectedTeam" [disabled]="teams.length == 1" placeholder="Mannschaft">
+            <mat-option *ngFor="let team of teams" [value]="team.teamId">{{ team.teamName }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
   <div class="games-table-top">
     <mat-form-field>
       <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filtern">
@@ -6,8 +14,13 @@
   </div>
 
   <mat-table #table [dataSource]="games">
+    <ng-container matColumnDef="gameDay">
+      <mat-header-cell *matHeaderCellDef>Spieltag</mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.gameDay | date: 'dd.MM.yyyy'}} </mat-cell>
+    </ng-container>
+
     <ng-container matColumnDef="starting">
-      <mat-header-cell *matHeaderCellDef>Datum</mat-header-cell>
+      <mat-header-cell *matHeaderCellDef>Beginnzeit</mat-header-cell>
       <mat-cell *matCellDef="let element"> {{element.starting}} </mat-cell>
     </ng-container>
 
@@ -27,11 +40,11 @@
       </mat-header-cell>
       <mat-cell *matCellDef="let element; let i=index">
         <button mat-icon-button>
-          <mat-icon aria-label="Edit" color="primary">edit</mat-icon>
+          <mat-icon aria-label="Edit" color="primary" (click)="change(element)">edit</mat-icon>
         </button>
         <button mat-icon-button>
-            <mat-icon aria-label="Delete" color="warn">delete</mat-icon>
-          </button>
+          <mat-icon aria-label="Delete" color="warn" (click)="delete(element)">delete</mat-icon>
+        </button>
       </mat-cell>
     </ng-container>
 

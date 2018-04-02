@@ -1,0 +1,8 @@
+<div class="container">
+  <p>{{message}}</p>
+  <div class="btnwrapper">
+      <button mat-button color="primary" [mat-dialog-close]="1" cdkFocusInitial>Ja</button>
+
+      <button mat-button color="accent" (click)="close()">Nein</button>
+    </div>
+</div>

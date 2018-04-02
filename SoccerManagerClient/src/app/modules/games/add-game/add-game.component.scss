@@ -1,0 +1,39 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    min-width: 450px;
+  }
+  
+  .container > * {
+    width: 100%;
+  }
+  
+  .form {
+    display: flex;
+    padding-top: 6px;
+  }
+  
+  .add-game-form-full-width {
+    font-size: 16px;
+    flex-grow: 1;
+    width: 100%;
+    min-width: 100px;
+  }
+
+  .add-game-form-half-width {
+    font-size: 16px;
+    flex-grow: 1;
+    width: 50%;
+    min-width: 100px;
+  }
+
+  .add-game-form-full-width-btnwrapper {
+    width: 100%;
+    margin-top: 10px;
+    text-align: center;
+  }
+
+  .add-game-form-full-width-btnwrapper button:first-child{
+      margin-right: 30px;
+  }
+  

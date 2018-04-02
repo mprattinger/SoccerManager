@@ -32,6 +32,10 @@ namespace SoccerManager.Data
                 modelBuilder.Entity(entityType.ClrType).Property<string>("CreatedBy");
                 modelBuilder.Entity(entityType.ClrType).Property<string>("ChangedBy");
             }
+
+            //modelBuilder.Entity<Squad>().HasKey(t => new { t.TeamId, t.PlayerId });
+            //modelBuilder.Entity<Squad>().HasOne(pt => pt.Team).WithMany(p => p.Squads).HasForeignKey(x => x.TeamId);
+            //modelBuilder.Entity<Squad>().HasOne(pt => pt.Player).WithMany(p => p.Squads).HasForeignKey(x => x.PlayerId);
         }
 
         public override int SaveChanges()
@@ -76,5 +80,7 @@ namespace SoccerManager.Data
         public DbSet<Team> Teams { get; set; }
         public DbSet<Player> Players { get; set; }
         public DbSet<Person> Persons { get; set; }
+        public DbSet<Game> Games { get; set; }
+        public DbSet<Squad> Squads { get; set; }
     }
 }

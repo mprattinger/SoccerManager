@@ -60,9 +60,11 @@ namespace SoccerManager
 
             _logger.LogInformation("Seeding database...");
             var clubs = createClubs();
-            createTeams(clubs);
+            var teams = createTeams(clubs);
             var persons = createPersons(adminUser);
-            createPlayers(clubs, persons);
+            var player = createPlayers(clubs, persons);
+            createSquads(teams.Last(), player);
+            createGames(teams.Last());
             _context.SaveChanges();
         }
 
@@ -163,7 +165,7 @@ namespace SoccerManager
             return clubs;
         }
 
-        private static void createTeams(Club[] clubs)
+        private static Team[] createTeams(Club[] clubs)
         {
             _logger.LogInformation("Creating teams...");
             var teams = new Team[]
@@ -172,17 +174,41 @@ namespace SoccerManager
                 new Team{ TeamName = "Reserve", ClubId = clubs.FirstOrDefault().ClubId }
             };
             _context.Teams.AddRange(teams);
+            return teams;
         }
 
-        private static void createPlayers(Club[] clubs, Person[] persons)
+        private static Player[] createPlayers(Club[] clubs, Person[] persons)
         {
             _logger.LogInformation("Creating players...");
             var players = new List<Player>();
-            foreach (var p in persons)
+            foreach (var p in persons.Where(p => p.FirstName != "Admin"))
             {
-                var player = new Player { Person = p, Club = clubs.FirstOrDefault() };
+                var player = new Player { Person = p, Club = clubs.FirstOrDefault()};
                 _context.Players.Add(player);
+                players.Add(player);
             }
+            return players.ToArray();
+        }
+
+        private static void createSquads(Team team, Player[] player)
+        {
+            foreach (var p in player)
+            {
+                _context.Squads.Add(new Squad { TeamId = team.TeamId, PlayerId = p.PlayerId });
+            }
+        }
+
+        private static Game[] createGames(Team team)
+        {
+            var games = new Game[]
+            {
+                new Game{ GameDay = new DateTime(2017, 8, 13, 15,0,0), Description = "Sieggraben - Steinberg", Place = "Sportplatz Sieggraben", Team = team},
+                new Game{ GameDay = new DateTime(2017, 8, 20, 15,0,0), Description = "Steinberg - Frankenau", Place = "Sportplatz Steinberg", Team = team, Home = true},
+                new Game{ GameDay = new DateTime(2017, 8, 25, 17,30,0), Description = "Kaisersdorf - Steinberg", Place = "Sportplatz Kaisersdorf", Team = team},
+                new Game{ GameDay = new DateTime(2017, 9, 2, 14,30,0), Description = "Steinberg - Neutal", Place = "Sportplatz Steinberg", Team = team, Home = true}
+            };
+            _context.Games.AddRange(games);
+            return games;
         }
         #endregion
     }

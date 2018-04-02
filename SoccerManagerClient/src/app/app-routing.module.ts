@@ -11,7 +11,8 @@ import { HomeComponent } from './home/home.component';
 const routes: Routes = [
   { path: '', component: HomeLayoutComponent, children: [
     { path: '', component: HomeComponent },
-    { path: 'games', loadChildren: 'app/modules/games/games.module#GamesModule' }
+    { path: 'games', loadChildren: 'app/modules/games/games.module#GamesModule' },
+    { path: 'player', loadChildren: 'app/modules/player/player.module#PlayerModule'}
   ] },
   {
     path: '', component: LoginLayoutComponent, children: [

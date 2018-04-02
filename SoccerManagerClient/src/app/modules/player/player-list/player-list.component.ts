@@ -1,27 +1,18 @@
-import { YesNoDialogComponent } from './../../../common/yes-no-dialog/yes-no-dialog.component';
 import { Component, OnInit } from '@angular/core';
-import { GamesService } from '../games.service';
-import { Game } from '../game';
-import { MatTableDataSource, MatDialog } from '@angular/material';
-import { AddGameComponent } from '../add-game/add-game.component';
+import { MatDialog } from '@angular/material';
 
 @Component({
-  selector: 'app-games-list',
-  templateUrl: './games-list.component.html',
-  styleUrls: ['./games-list.component.scss']
+  selector: 'app-player-list',
+  templateUrl: './player-list.component.html',
+  styleUrls: ['./player-list.component.scss']
 })
-export class GamesListComponent implements OnInit {
-  displayedColumns = ['gameDay', 'starting', 'description', 'place', 'actions'];
+export class PlayerListComponent implements OnInit {
 
-  games: MatTableDataSource<Game>;
-  teams= [{ teamId: "8ab1ebd7-e15a-46e8-83a8-a816933b63c0", teamName: "Reserve"}]
-  selectedTeam: string;
+  displayedColumns = ['firstName', 'lastName', 'sqads'];
 
-  constructor(private gamesService: GamesService,
-  public dialog: MatDialog) { }
+  constructor(public dialog: MatDialog) { }
 
   ngOnInit() {
-    this.selectedTeam = "8ab1ebd7-e15a-46e8-83a8-a816933b63c0";
     this.loadData();
   }
 

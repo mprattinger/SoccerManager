@@ -1,0 +1,42 @@
+<div class="player-list-container mat-elevation-z8">
+
+  <div class="player-table-top">
+    <mat-form-field>
+      <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filtern">
+    </mat-form-field>
+  </div>
+
+  <mat-table #table [dataSource]="players">
+    <ng-container matColumnDef="firstName">
+      <mat-header-cell *matHeaderCellDef>Vorname</mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.firstName }} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="lastName">
+      <mat-header-cell *matHeaderCellDef>Beginnzeit</mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.lastName}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="sqads">
+      <mat-header-cell *matHeaderCellDef>Kader</mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.sqads}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <mat-header-cell *matHeaderCellDef>
+        <button mat-mini-fab class="add-btn" (click)="addNew()">+</button>
+      </mat-header-cell>
+      <mat-cell *matCellDef="let element; let i=index">
+        <button mat-icon-button>
+          <mat-icon aria-label="Edit" color="primary" (click)="change(element)">edit</mat-icon>
+        </button>
+        <button mat-icon-button>
+          <mat-icon aria-label="Delete" color="warn" (click)="delete(element)">delete</mat-icon>
+        </button>
+      </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  </mat-table>
+</div>

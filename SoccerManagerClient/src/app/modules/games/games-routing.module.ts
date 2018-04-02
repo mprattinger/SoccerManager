@@ -5,8 +5,7 @@ import { GamesListComponent } from './games-list/games-list.component';
 import { AddGameComponent } from './add-game/add-game.component';
 
 const routes: Routes = [
-  { path: 'list', component: GamesListComponent },
-  { path: 'add', component: AddGameComponent}
+  { path: 'list', component: GamesListComponent }
 ];
 
 @NgModule({

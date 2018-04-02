@@ -1,3 +1,4 @@
+import { ToolsService } from './common/tools.service';
 import { BrowserModule } from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
@@ -16,6 +17,7 @@ import { AppMaterialModule } from './app-material/app-material.module';
 import { FormsModule } from '@angular/forms';
 import { HomeComponent } from './home/home.component';
 import { HttpClientModule } from '@angular/common/http';
+import { YesNoDialogComponent } from './common/yes-no-dialog/yes-no-dialog.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +25,8 @@ import { HttpClientModule } from '@angular/common/http';
     HomeLayoutComponent,
     LoginLayoutComponent,
     LoginComponent,
-    HomeComponent
+    HomeComponent,
+    YesNoDialogComponent
   ],
   imports: [
     AppRoutingModule,
@@ -33,7 +36,8 @@ import { HttpClientModule } from '@angular/common/http';
     HttpClientModule,
     AppMaterialModule
   ],
-  providers: [AuthService, AuthGuard],
+  entryComponents: [YesNoDialogComponent],
+  providers: [AuthService, AuthGuard, ToolsService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

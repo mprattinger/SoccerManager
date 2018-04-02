@@ -1,15 +1,19 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace SoccerManager.Data.DTO
 {
     public class Team : IAuditable
     {
-        public int TeamId { get; set; }
+        public Guid TeamId { get; set; }
         [Required]
         public string TeamName { get; set; }
 
         [Required]
-        public int ClubId { get; set; }
+        public Guid ClubId { get; set; }
         public Club Club { get; set; }
+
+        public List<Game> Games { get; set; }
     }
 }

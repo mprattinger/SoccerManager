@@ -2,7 +2,7 @@
   <h1>Neues Spiel anlegen</h1>
   <form [formGroup]="addGameForm" (ngSubmit)="onFormSubmit(addGameForm.value)">
 
-    <mat-form-field class="add-game-form-full-width">
+    <mat-form-field class="add-game-form-half-width">
       <input formControlName="gameDay" matInput placeholder="Spieltag" [matDatepicker]="picker" required>
       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
@@ -13,14 +13,46 @@
       </mat-error>
     </mat-form-field>
 
-    <mat-form-field class="add-game-form-full-width">
+    <mat-form-field class="add-game-form-half-width">
       <input formControlName="starting" matInput placeholder="Beginndatum" required>
       <mat-error>
-        <span *ngIf="!addGameForm.get('gameDay').valid && addGameForm.get('gameDay').touched">
-          Bitte geben Sie einen Spieltag ein!
+        <span *ngIf="!addGameForm.get('starting').valid && addGameForm.get('starting').touched && addGameForm.get('starting').value == ''">
+          Bitte geben Sie die Beginnzeit ein!
+        </span>
+        <span *ngIf="!addGameForm.get('starting').valid && addGameForm.get('starting').touched && addGameForm.get('starting').value != ''">
+          Bitte geben Sie die Beginnzeit in der Form HH:MM ein!
         </span>
       </mat-error>
     </mat-form-field>
+
+    <mat-form-field class="add-game-form-full-width">
+      <input formControlName="description" matInput placeholder="Spiel" required>
+      <mat-error>
+        <span *ngIf="!addGameForm.get('description').valid && addGameForm.get('description').touched">
+          Bitte geben Sie den Namen des Spiels ein!
+        </span>
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="add-game-form-full-width">
+      <input formControlName="place" matInput placeholder="Spielort" required>
+      <mat-error>
+        <span *ngIf="!addGameForm.get('place').valid && addGameForm.get('place').touched">
+          Bitte geben Sie den Spielort ein!
+        </span>
+      </mat-error>
+    </mat-form-field>
+
+    <!-- <mat-form-field class="add-game-form-full-width"> -->
+    <br>
+    <mat-checkbox formControlName="home" matInput placeholder="Heimspiel" color="primary">Heimspiel</mat-checkbox>
+    <!-- </mat-form-field> -->
+
+    <div class="add-game-form-full-width-btnwrapper">
+      <button mat-raised-button color="primary" [disabled]="!addGameForm.valid" (click)="add(addGameForm.value)">{{okButtonText}}</button>
+
+      <button mat-raised-button color="accent" (click)="close()">Abbrechen</button>
+    </div>
   </form>
 
 
